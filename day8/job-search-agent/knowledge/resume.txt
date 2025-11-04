@@ -1,0 +1,89 @@
+# 정주희
+
+**DX 컨설턴트**
+
+📧 jungjuhee2001@gmail.com | 📱 010-1234-5678  
+🌐 GitHub: [github.com/clara0326](https://github.com/clara0326)  
+📍 South Korea
+
+
+---
+
+## Professional Summary
+
+디지털 전환(DX) 컨설턴트 지망생으로, 데이터 기반 문제 해결과 업무 프로세스 개선에 강점을 보유하고 있습니다. Python을 활용한 간단한 데이터 처리·자동화와 Notion/Figma를 통한 협업 문서화·프로토타이핑 경험이 있으며, 현장 운영(수학학원 데스크 3년)과 그로스 마케팅 실무(3개월)를 통해 고객 응대, 운영 효율화, 마케팅 퍼널 운영의 기초를 익혔습니다. **2026년 여름 한양대 ERICA ICT융합학부 졸업 예정**, **2026년 3월 AIVLE School(에이블 스쿨) 우수 수료 예정**으로 실무형 DX 역량을 강화하고 있습니다.
+
+---
+
+## Technical Skills
+
+**Programming & Tools:** Python, Cursor
+**OA & Collaboration:** MS Office(Excel/PowerPoint/Word), Notion, Figma, Slack
+**Cloud (기초):** AWS
+**OS:** Windows, macOS, Linux
+
+---
+
+## Professional Experience
+
+### 데스크 운영 (파트타임)
+
+**○○ 수학학원** | South Korea | *약 3년*
+
+* 원생/학부모 응대, 일정·수납·행정 처리 등 데스크 전반 운영
+* 수업·시험 일정 관리와 결제 현황 정리, 문의 대응 프로세스 표준화 지원
+* Notion/Excel 기반 운영 대시보드·체크리스트 제작으로 업무 누락 최소화
+
+### 그로스 마케팅 실무 (인턴)
+
+**△△ 마케팅 에이전시** | South Korea | *3개월*
+
+* 랜딩/콘텐츠 실험 설계 및 성과 지표(CTR, 전환 이벤트) 모니터링 보조
+* 캠페인 운영 로그 정리, 보고서 템플릿 표준화로 반복 작업 시간 단축
+* Figma를 활용한 간단한 크리에이티브 시안·목업 제작 지원
+
+---
+
+## Education
+
+### ICT융합학부 (학사)
+
+**한양대학교 ERICA** | South Korea | *졸업 예정: 2026년 여름*
+
+* 관심 분야: 데이터 기반 프로세스 개선, 업무 자동화, 서비스 운영 분석
+
+### 프로그램 수료(예정)
+
+**AIVLE School (에이블 스쿨)** | *우수 수료 예정: 2026년 3월*
+
+* DX 실습 중심 팀 프로젝트, 협업 도구 활용, 기초 데이터 분석/자동화
+
+---
+
+## Projects
+
+* **운영 문서화 & 체크리스트 표준화** — Notion/Excel 기반 체크리스트와 템플릿으로 데스크 업무 흐름 정리
+* **마케팅 퍼널 리포트 템플릿** — 캠페인별 주간 리포트 포맷 제작, 핵심 지표와 인사이트 섹션 고정화
+
+---
+
+## Certifications
+
+* AICE Associate
+* 빅데이터분석기사
+* AWS (관련 자격/트레이닝)
+* **TOSS Speaking (AL)**
+* **IELTS 5.5**
+
+---
+
+## Languages
+
+* 한국어: 원어민
+* 영어: 기본 업무 커뮤니케이션 가능 *(IELTS 5.5 기준)*
+
+---
+
+## Additional Information
+
+* 관심사: 업무 자동화(파이썬 스크립트), 협업 프로세스 설계, 데이터 정리/시각화 기본기 강화

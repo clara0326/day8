@@ -1,0 +1,173 @@
+job_extraction_task:
+  description: >
+    [중요 언어 규칙]
+    - 모든 출력은 반드시 한국어여야 합니다.
+    - JSON을 출력할 때는 마크다운 코드블록(예: ```json) 없이 **순수 JSON만** 출력하세요.
+    - 출처 불명·추측 정보는 금지합니다. 확인 불가한 값은 "정보 없음" 또는 null로 표기하세요.
+
+    [작업 지시]
+    {location}에서 {level} 레벨 {position} 채용 공고를 찾아 추출하세요.
+
+    [단계]
+    1) Web Search Tool을 사용해 {location}에서 {level} 레벨 {position} 채용 공고를 검색합니다.
+    2) 검색 결과에서 개별 채용 공고(상세 페이지)를 추출합니다.
+    3) {location}에서 {level} 레벨 {position}에 해당하지 않는 공고를 필터링합니다.
+
+    [정책]
+    - 숫자/날짜/회사명/직함/URL은 원문 표기를 우선합니다.
+    - 스키마의 키/타입/배열 구조를 절대 변경하지 마세요.
+    - 제공되지 않은 정보는 새로 만들어내지 말고 "정보 없음"/null로 남겨두세요.
+  expected_output: >
+    `JobList` 스키마와 일치하는 **순수 JSON** 객체 (코드블록 금지).
+  agent: job_search_agent
+
+job_matching_task:
+  description: >
+    [중요 언어 규칙]
+    - 모든 설명은 한국어로 작성합니다.
+    - JSON 출력은 마크다운 코드블록 없이 **순수 JSON만** 반환합니다.
+
+    [작업 지시]
+    추출된 채용 목록(JobList)과 사용자의 실제 이력서를 바탕으로 각 공고가 사용자와 얼마나 잘 맞는지 평가하세요.
+
+    [평가 기준]
+    - 기술 스택 정합성
+    - 직무 레벨 적합성
+    - 산업 및 회사 규모 선호
+    - 원격/근무 유연성
+    - 고용 형태(정규/계약 등)
+    - 예상 보상(급여) 기대치
+    - 이력서 내 키워드와 제외 요인(디스퀄리파이어)
+
+    [요구사항]
+    - 각 공고에 대해 `match_score`를 1(적합도 낮음) ~ 5(완벽히 적합)로 부여하고,
+      `reason`에 한국어로 간단하고 구체적인 근거를 작성합니다.
+    - 기존 공고 필드는 그대로 유지하고 **수정/삭제하지 않습니다.**
+    - 추측 금지: 불확실하면 "정보 없음" 또는 null을 유지하세요.
+
+    [정책]
+    - 스키마 키/타입 유지.
+    - 숫자·고유명사·URL은 원문 표기 우선.
+  expected_output: >
+    원래의 `Job` 스키마에 다음 두 필드를 추가한 **순수 JSON** 객체(코드블록 금지):
+    - match_score: 1~5의 정수
+    - reason: 한국어로 점수 근거(짧고 구체적으로)
+  agent: job_matching_agent
+
+job_selection_task:
+  description: >
+    [중요 언어 규칙]
+    - 모든 설명은 한국어로 작성합니다.
+    - JSON 출력은 마크다운 코드블록 없이 **순수 JSON만** 반환합니다.
+
+    [작업 지시]
+    `match_score`와 `reason` 필드가 포함된 채용 리스트(RankedJobList)를 받아:
+    1) 점수와 사유를 분석하여 사용자에게 **최적의 단 하나의 채용 공고**를 선택합니다.
+    2) 선택 사유를 `reason` 필드에 간결한 한국어로 작성합니다.
+    3) 선택된 공고의 `selected`를 true로, 기타 모든 공고는 false로 설정합니다.
+    4) 원래의 공고 필드 내용(예: job_title, company_name 등)은 변경하지 않습니다.
+
+    [정책]
+    - 스키마 키/타입 유지.
+    - 추측 금지, 출처 불명 정보 금지.
+  expected_output: >
+    선택된 공고에 대한 `ChosenJob` 스키마와 일치하는 **순수 JSON** 객체(코드블록 금지).
+  agent: job_matching_agent
+
+resume_rewriting_task:
+  description: >
+    [중요 언어 규칙]
+    - 문서는 한국어로 작성합니다(회사명/제품명 등 고유명사는 원문 허용).
+    - 마크다운으로 작성하되, **사실 과장/조작 금지**.
+
+    [작업 지시]
+    포함된 지식 소스로 제공된 **사용자의 실제 이력서**와 선택된 공고(ChosenJob)를 바탕으로,
+    해당 공고에 정렬되도록 기존 이력서를 **재작성**하세요.
+
+    [집중 포인트]
+    - 관련 기술/프로젝트/성과를 상단 배치, 핵심 키워드 반영
+    - 요약 및 경력 bullet을 공고 요구사항 용어로 재서술
+    - 톤/기술 초점/용어 일치(ATS 친화적)
+    - **실제 경험만 유지**, 관련 없는 내용은 축약/제거 가능
+
+    [금지]
+    - 가짜 회사/역할/기간/기술 추가 금지
+    - 모호한 추측성 성과 수치 생성 금지(확인 불가 시 정성적 표현 또는 "정보 없음")
+
+    [형식]
+    - 최종 산출물은 Markdown 형식(헤더·리스트 등)으로 작성합니다.
+  expected_output: >
+    선택된 공고에 최적화된, **사용자의 실제 이력서**를 Markdown 형식으로 재작성한 결과(한국어).
+  agent: resume_optimization_agent
+  output_file: output/rewritten_resume.md
+  create_directory: true
+  markdown: true
+
+company_research_task:
+  description: >
+    [중요 언어 규칙]
+    - 모든 설명은 한국어로 작성합니다.
+    - 출처가 불명확한 정보는 기재하지 않습니다(확인 불가 시 "정보 없음").
+
+    [작업 지시]
+    선택된 공고(ChosenJob)를 기준으로, 공개 웹 자원을 활용해 채용 회사를 조사하세요.
+
+    [목표]
+    1) 회사 규모, 산업, 미션, 가치, 최근 소식 파악
+    2) 채용 공고로부터 팀 구조와 제품 맥락 추정
+    3) 예상 면접 주제/질문 도출
+    4) 지원자가 면접에서 물어볼 통찰 질문 제시
+
+    [출처]
+    - 회사 웹사이트, 프레스 릴리스, 블로그, 소셜 미디어, 리뷰(필요 시 링크 명시)
+    - 숫자/날짜/고유명사는 원문 표기 우선
+
+    [형식]
+    - 아래 섹션 구조의 Markdown 문서로 작성:
+      ## Company Overview
+      ## Mission and Values
+      ## Recent News or Changes
+      ## Role Context and Product Involvement
+      ## Likely Interview Topics
+      ## Suggested Questions to Ask
+  expected_output: >
+    상기 섹션을 포함한 한국어 Markdown 파일(고유명사는 원문 허용).
+  agent: company_research_agent
+  markdown: true
+  output_file: output/company_research.md
+
+interview_prep_task:
+  description: >
+    [중요 언어 규칙]
+    - 모든 설명은 한국어로 작성합니다.
+
+    [입력]
+    1) 선택된 공고(ChosenJob)
+    2) 맞춤 이력서(RewrittenResume)
+    3) 기업 조사 요약(CompanyResearch)
+
+    [작업 지시]
+    아래 내용을 포함한 상세 면접 준비 문서를 작성하세요.
+    - 직무 요약과 적합성 이유
+    - 맞춤 이력서 하이라이트(가장 관련 높은 포인트)
+    - 회사/제품/가치의 간단 요약
+    - 직무·회사 기반 예상 면접 질문
+    - 지원자가 면접관에게 물어볼 맞춤 질문
+    - 사전 학습해야 할 핵심 개념 목록
+    - 톤/집중 영역/주의할 레드 플래그에 대한 전략적 조언
+
+    [형식]
+    - 문서 제목: "Interview Prep: $CompanyName – $JobTitle"
+    - 섹션:
+      ## Job Overview
+      ## Why This Job Is a Fit
+      ## Resume Highlights for This Role
+      ## Company Summary
+      ## Predicted Interview Questions
+      ## Questions to Ask Them
+      ## Concepts To Know/Review
+      ## Strategic Advice
+  expected_output: >
+    위 제목과 섹션 구조를 갖춘 한국어 Markdown 문서.
+  agent: interview_prep_agent
+  output_file: output/interview_prep.md
